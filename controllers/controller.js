@@ -78,6 +78,7 @@ class Controller {
         data,
       });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -122,6 +123,96 @@ class Controller {
       });
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  static async categories(req, res, next) {
+    try {
+      let data = await Category.findAll({
+        include: {
+          model: User,
+        },
+      });
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(400).json({ msg: "gagal" });
+      console.log(error);
+    }
+  }
+
+  static async categoryById(req, res, next) {
+    try {
+      let data = await Category.findAll({
+        include: {
+          model: User,
+        },
+      });
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(400).json({ msg: "gagal" });
+      console.log(error);
+    }
+  }
+
+  static async categoryById(req, res, next) {
+    try {
+      const { id } = req.params;
+      let data = await Category.findByPk(id);
+
+      if (!data) {
+        throw new Error("Error Not Found");
+      }
+
+      res.status(200).json({
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async categoryById(req, res, next) {
+    try {
+      const { name } = req.body;
+      let data = await Category.create({
+        name,
+        code,
+        description,
+      });
+
+      if (!data) {
+        throw new Error("Validation Errors");
+      }
+
+      res.status(201).json({
+        msg: `berhasil create category`,
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteUserById(req, res, next) {
+    try {
+      const { id } = req.params;
+      let data = await User.findByPk(id);
+
+      if (!data) {
+        throw new Error("Error Not Found");
+      }
+
+      await User.destroy({
+        where: {
+          id,
+        },
+      });
+
+      res.status(200).json({
+        msg: `${data.name} success to delete`,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }
