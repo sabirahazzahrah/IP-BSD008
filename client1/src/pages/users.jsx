@@ -82,7 +82,7 @@ const User = () => {
                     <td className="p-3">
                       {data.city}, {data.province}
                     </td>
-                    <td className="p-3">{data.Category.name}</td>
+                    <td className="p-3">{data.firstName}</td>
                     {/* <td className="p-3">{datas.User.username}</td> */}
                     <td>
                       <Link to={`/users/${datas.id}`}>
