@@ -3,8 +3,9 @@ const { User } = require("../models");
 
 const authentication = async (req, res, next) => {
   try {
-    const { authorization } = req.headers;
+    const { authorization, accept } = req.headers;
 
+    console.log(accept);
     if (!authorization) {
       throw new Error("Unauthorized");
     }

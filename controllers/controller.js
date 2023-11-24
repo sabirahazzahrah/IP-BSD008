@@ -34,6 +34,7 @@ class Controller {
   static async login(req, res, next) {
     try {
       const { email, password } = req.body;
+      console.log(email, password);
       if (!email || !password) {
         throw new Error("Please input email/password");
       }
@@ -43,7 +44,10 @@ class Controller {
           email,
         },
       });
-      console.log(data);
+
+      if (!data) {
+        throw new Error("Not Found");
+      }
 
       const isValid = compareHash(password, data.password);
 
@@ -68,13 +72,11 @@ class Controller {
   static async getUser(req, res, next) {
     try {
       let data = await User.findAll({
-        include: {
-          model: Category,
+        attributes: {
+          exclude: ["password", "createdAt", "updatedAt"],
         },
       });
-      console.log(data);
       res.status(200).json({
-        msg: "dah kebaca ni",
         data,
       });
     } catch (error) {
@@ -129,28 +131,19 @@ class Controller {
   static async categories(req, res, next) {
     try {
       let data = await Category.findAll({
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
         include: {
           model: User,
+          attributes: {
+            exclude: ["password", "updatedAt", "createdAt"],
+          },
         },
       });
       res.status(200).json({ data });
     } catch (error) {
-      res.status(400).json({ msg: "gagal" });
-      console.log(error);
-    }
-  }
-
-  static async categoryById(req, res, next) {
-    try {
-      let data = await Category.findAll({
-        include: {
-          model: User,
-        },
-      });
-      res.status(200).json({ data });
-    } catch (error) {
-      res.status(400).json({ msg: "gagal" });
-      console.log(error);
+      next(error);
     }
   }
 
@@ -171,7 +164,7 @@ class Controller {
     }
   }
 
-  static async categoryById(req, res, next) {
+  static async addCategories(req, res, next) {
     try {
       const { name } = req.body;
       let data = await Category.create({
@@ -213,6 +206,40 @@ class Controller {
       });
     } catch (error) {
       next(error);
+    }
+  }
+
+  static async addPost(req, res, next) {
+    try {
+      const { history } = req.body;
+
+      const data = await Post.create({
+        history,
+        UserId: req.loginInfo.id,
+      });
+
+      console.log(data);
+      res.status(201).json({ msg: "berhasil add post", data });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async getPosts(req, res, next) {
+    try {
+      const data = await Post.findAll({
+        include: {
+          model: User,
+          attributes: {
+            exclude: ["password", "createdAt", "updatedAt"],
+          },
+        },
+      });
+      res.status(200).json({
+        data,
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 }

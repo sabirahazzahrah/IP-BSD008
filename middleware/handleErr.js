@@ -8,6 +8,26 @@ const errorHandler = (err, req, res, next) => {
     msg = err.errors[0].message;
   }
 
+  if (err.message === "Please input email/password") {
+    statusCode = 401;
+    msg = err.message;
+  }
+
+  if (err.message === "Unauthorized") {
+    statusCode = 401;
+    msg = err.message;
+  }
+
+  if (err.message === "Invalid email/password") {
+    statusCode = 401;
+    msg = err.message;
+  }
+
+  if (err.message === "Error Not Found") {
+    statusCode = 404;
+    msg = err.message;
+  }
+
   res.status(statusCode).json({ msg });
 };
 

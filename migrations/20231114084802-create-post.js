@@ -12,9 +12,6 @@ module.exports = {
       history: {
         type: Sequelize.STRING,
       },
-      comment: {
-        type: Sequelize.STRING,
-      },
       UserId: {
         type: Sequelize.INTEGER,
         references: {

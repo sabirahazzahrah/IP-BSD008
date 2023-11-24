@@ -25,9 +25,9 @@ class AuthController {
         defaults: {
           firstName: payload.given_name,
           lastName: payload.family_name,
-          phoneNumber: "defaults",
-          province: "defaults",
-          city: "defaults",
+          // phoneNumber: "defaults",
+          // province: "defaults",
+          // city: "defaults",
           email: payload.email,
           password: "defaults",
           CategoryId: 1,
@@ -51,13 +51,17 @@ class AuthController {
 
   static async githubLogin(req, res, next) {
     try {
-      console.log(req.query, "<<<<<<");
-      const { code } = req.query;
+      // console.log(req.query, "<<<<<<");
+      const { code } = req.body;
       const clientId = process.env.GITHUB_CLIENT_ID;
       const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
+      // console.log(code, 59);
+
       const params = `?client_id=${clientId}&client_secret=${clientSecret}&code=${code}`;
-      const tokenResponse = await axios.post(
+      const {
+        data: { access_token },
+      } = await axios.post(
         "https://github.com/login/oauth/access_token" + params,
         null,
         {
@@ -66,8 +70,33 @@ class AuthController {
           },
         }
       );
-      console.log(tokenResponse, 70);
-      res.status(200).json({ msg: "ini" });
+
+      const { data } = await axios.get("https://api.github.com/user", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      const [user, created] = await User.findOrCreate({
+        where: {
+          email: data.login + "@github.com",
+        },
+        defaults: {
+          email: data.login + "@github.com",
+          password: "defaults",
+          CategoryId: 1,
+        },
+        hooks: false,
+      });
+
+      const token = signToken({
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+      });
+
+      // console.log(tokenResponse, 70);
+      res.status(200).json(token);
     } catch (error) {
       console.log(error, 74);
     }

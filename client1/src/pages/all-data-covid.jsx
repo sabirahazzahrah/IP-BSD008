@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Navbar from "../component/Navbar";
 
 const AllData = () => {
   const [datas, setDatas] = useState({});
@@ -24,7 +25,8 @@ const AllData = () => {
   }, []);
   return (
     <>
-      <div className="container p-2 mx-auto rounded-md sm:p-4 text-gray-800 bg-gray-50">
+      <Navbar />
+      <div className="container mt-10 p-2 mx-auto rounded-md sm:p-4 text-gray-800 bg-gray-50">
         <h2 className="mb-3 text-2xl font-semibold leadi">Standings</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full text-xs">

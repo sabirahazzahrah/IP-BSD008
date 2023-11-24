@@ -18,63 +18,18 @@ module.exports = (sequelize, DataTypes) => {
     {
       firstName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "first name cannot be empty",
-          },
-          notNull: {
-            msg: "first name cannot be null",
-          },
-        },
       },
       lastName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "last name cannot be empty",
-          },
-          notNull: {
-            msg: "last name cannot be null",
-          },
-        },
       },
       phoneNumber: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "Phone Number cannot be empty",
-          },
-          notNull: {
-            msg: "Phone Number cannot be null",
-          },
-        },
       },
       province: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "Province cannot be empty",
-          },
-          notNull: {
-            msg: "Province cannot be null",
-          },
-        },
       },
       city: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "City cannot be empty",
-          },
-          notNull: {
-            msg: "City cannot be null",
-          },
-        },
       },
       email: {
         type: DataTypes.STRING,

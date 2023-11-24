@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../component/Navbar";
 
 const User = () => {
   const BASE_URL = "http://localhost:3000";
@@ -32,12 +33,27 @@ const User = () => {
     fetchData();
   }, []);
 
-  console.log(datas[0], "<<<<<<<<");
+  const handleDelete = async (id) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await axios.delete(`${BASE_URL}/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("berhasil delete");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // console.log(datas[0], "<<<<<<<<");
   return (
     <>
       {error && <h1>{error}</h1>}
       {loading && <h1>Loading....</h1>}
       <div className="container  h-screen max-w-screen-xl text-gray-800">
+        <Navbar />
         <h2 className="mb-4 text-2xl font-semibold leadi">List Of data</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full text-xs text-left whitespace-nowrap">
@@ -64,23 +80,21 @@ const User = () => {
                     </td>
                     <td className="p-3">{data.email}</td>
                     <td className="p-3">
-                      {data.city}
-                      {data.province}
+                      {data.city}, {data.province}
                     </td>
                     <td className="p-3">{data.Category.name}</td>
                     {/* <td className="p-3">{datas.User.username}</td> */}
                     <td>
-                      <Link
-                      // to={`/users/${datas.id}`}
-                      >
+                      <Link to={`/users/${datas.id}`}>
                         <span className="px-3 py-1 font-semibold rounded-md dark:bg-purple-400 dark:text-gray-900">
                           <span>Edit</span>
                         </span>
                       </Link>
-                      <Link
-                      // to={`/datass/delete/${datas.id}`}
-                      >
-                        <span className="px-3 py-1 font-semibold rounded-md dark:bg-purple-400 dark:text-gray-900">
+                      <Link to={`/delete/user/${datas.id}`}>
+                        <span
+                          onClick={handleDelete}
+                          className="px-3 py-1 font-semibold rounded-md dark:bg-purple-400 dark:text-gray-900"
+                        >
                           <span>Delete</span>
                         </span>
                       </Link>
