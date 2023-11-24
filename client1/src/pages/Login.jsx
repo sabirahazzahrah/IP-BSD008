@@ -1,10 +1,11 @@
-import { GoogleLogin } from "@react-oauth/google";
+// import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const BASE_URL = "http://localhost:3000";
+  const [windowLoaded, setWindowLoaded] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rerender, setRerender] = useState(false);
@@ -48,17 +49,50 @@ const Login = () => {
       window.location.assign(
         `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`
       );
-      // const res = await fetch(
-      //   `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`,
-      //   { method: "get" }
-      // );
-      // const json = await res.json();
-
-      navigate("/home");
     } catch (error) {
       console.log("Error: ", error);
     }
   };
+
+  const createFakeGoogleWrapper = () => {
+    const googleLoginWrapper = document.createElement("div");
+    googleLoginWrapper.style.display = "none";
+    googleLoginWrapper.classList.add("custom-google-button");
+
+    document.body.appendChild(googleLoginWrapper);
+
+    window.google.accounts.id.initialize({
+      client_id:
+        "938500293020-jl4gv4728t4o95d6av2ntene2itsmslo.apps.googleusercontent.com",
+      callback: handleGoogleLogin,
+    });
+
+    window.google.accounts.id.renderButton(googleLoginWrapper, {
+      type: "icon",
+      width: "200",
+    });
+
+    const googleLoginWrapperButton =
+      googleLoginWrapper.querySelector("div[role=button]");
+
+    return {
+      click: () => {
+        googleLoginWrapperButton.click();
+      },
+    };
+  };
+
+  useEffect(() => {
+    if (!windowLoaded) {
+      (() => {
+        const googleButtonWrapper = createFakeGoogleWrapper();
+        window.googleBtnClick = () => {
+          googleButtonWrapper.click();
+        };
+      })();
+      setWindowLoaded(true);
+    }
+  }, [windowLoaded]);
 
   useEffect(() => {
     const queryString = window.location.search;
@@ -93,7 +127,7 @@ const Login = () => {
           <h1 className="text-2xl font-bold text-center">Login</h1>
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-1 text-sm">
-              <label for="email" className="block dark:text-gray-400">
+              <label htmlFor="email" className="block dark:text-gray-400">
                 Email
               </label>
               <input
@@ -106,7 +140,7 @@ const Login = () => {
               />
             </div>
             <div className="space-y-1 text-sm">
-              <label for="password" className="block dark:text-gray-400">
+              <label htmlFor="password" className="block dark:text-gray-400">
                 Password
               </label>
               <input
@@ -142,7 +176,7 @@ const Login = () => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 32 32"
-                onClick={handleGoogleLogin}
+                onClick={window.googleBtnClick}
                 className="w-5 h-5 fill-current"
               >
                 <path d="M16.318 13.714v5.484h9.078c-0.37 2.354-2.745 6.901-9.078 6.901-5.458 0-9.917-4.521-9.917-10.099s4.458-10.099 9.917-10.099c3.109 0 5.193 1.318 6.38 2.464l4.339-4.182c-2.786-2.599-6.396-4.182-10.719-4.182-8.844 0-16 7.151-16 16s7.156 16 16 16c9.234 0 15.365-6.49 15.365-15.635 0-1.052-0.115-1.854-0.255-2.651z"></path>
@@ -163,7 +197,7 @@ const Login = () => {
             </button>
           </div>
           <p className="text-xs text-center sm:px-6 dark:text-gray-400">
-            Don't have an account?
+            Don&apos;t have an account?
             <a className="underline dark:text-gray-100">Sign up</a>
           </p>
         </div>
